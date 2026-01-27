@@ -19,7 +19,7 @@ app.listen(port, () => {
 //mysql 연결하기
 const mysql = require('mysql'); //mysql모듈 가져오기
 const connection = mysql.createConnection({
-  host: 'localhost',
+  host: 'database',
   user: 'root',
   password: '1234',
   database: 'kdt'
@@ -523,4 +523,5 @@ app.post('/question', (req, res) => {
       res.json({ message: '등록 완료' });
     }
   );
+
 });
