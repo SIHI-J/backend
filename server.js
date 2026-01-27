@@ -299,6 +299,7 @@ app.post('/fruits', (req, res) => {
     'INSERT INTO fruits (name, price, color, country) VALUES (?, ?, ?, ?)';
 
   connection.query(sql, [name, price, color, country], (err) => {
+    console.error("FRUITS INSERT ERROR:", err);
     if (err) return res.status(500).json({ error: 'DB INSERT 오류' });
     res.json({ message: '등록 완료' });
   });
@@ -525,3 +526,4 @@ app.post('/question', (req, res) => {
   );
 
 });
+
