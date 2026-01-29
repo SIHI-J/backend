@@ -125,7 +125,7 @@ app.post('/ginipet_users', async (req, res) => {
   }
 });
 //로그인
-app.post('/login', (req, res) => {
+app.post('/ginipet_login', (req, res) => {
   const { username, password } = req.body || {};
 
   if (!username || !password) {
@@ -591,5 +591,6 @@ app.post('/question', (req, res) => {
   );
 
 });
+
 
 
