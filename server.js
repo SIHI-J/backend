@@ -104,6 +104,7 @@ app.get('/ginipet_users', (req, res) => {
 });
 //회원 가입
 app.post('/ginipet_users', async (req, res) => {
+console.log("가입 req.body:", req.body);
   // 프론트에서 보낸 데이터 추출
   const { username, password, tel, email } = req.body;
 
@@ -591,6 +592,7 @@ app.post('/question', (req, res) => {
   );
 
 });
+
 
 
 
