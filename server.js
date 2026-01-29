@@ -90,6 +90,71 @@ app.post('/login', (req, res) => {
     }
   });
 });
+//회원가입 아이디 중복 확인
+app.get('/ginipet_users', (req, res) => {
+  const { username } = req.query;
+  const sql = "SELECT * FROM ginipet_users WHERE username = ?";
+  data.query(sql, [username], (err, results) => {
+    if (err) {
+      console.error('중복확인 쿼리 오류:', err);
+      return res.status(500).json({ error: 'DB 조회 오류' });
+    }
+    res.json(results);
+  });
+});
+//회원 가입
+app.post('/ginipet_users', async (req, res) => {
+  // 프론트에서 보낸 데이터 추출
+  const { username, password, tel, email } = req.body;
+
+  try {
+    // 비밀번호 암호화
+    const hashedPassword = await bcrypt.hash(password, saltRounds); //npm install bcrypt
+    const sql = "INSERT INTO ginipet_users (username, password, tel, email) VALUES (?, ?, ?, ?)";
+
+    data.query(sql, [username, hashedPassword, tel, email], (err, result) => {
+      if (err) {
+        console.error('MySQL 실행 에러:', err);
+        return res.status(500).json({ error: '데이터베이스 저장 실패' });
+      }
+      res.status(200).json({ message: "회원가입 완료" });
+    });
+  } catch (error) {
+    console.error('bcrypt 암호화 에러:', error);
+    res.status(500).json({ error: '서버 내부 에러' });
+  }
+});
+//로그인
+app.post('/login', (req, res) => {
+  const { username, password } = req.body || {};
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "아이디/비밀번호를 입력해주세요." });
+  }
+
+  const sql = "SELECT * FROM ginipet_users WHERE username = ?";
+  data.query(sql, [username], async (err, results) => {
+    if (err) return res.status(500).json({ message: "서버 오류" });
+    if (results.length === 0) return res.status(404).json({ message: "존재하지 않는 계정입니다." });
+
+    const user = results[0];
+
+    if (!user.password) {
+      return res.status(500).json({ message: "비밀번호 데이터가 없습니다." });
+    }
+
+    try {
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) return res.status(401).json({ message: "비밀번호가 일치하지 않습니다." });
+
+      const token = jwt.sign({ username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+      return res.status(200).json({ message: `${user.username}님 환영합니다!!`, token });
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({ message: "인증 처리 중 오류 발생" });
+    }
+  });
+});
 //테이블 전체 데이터를 조회 http://localhost:9070/테이블명
 app.get('/:table', (req, res) => {
   const table = req.params.table;
@@ -526,4 +591,5 @@ app.post('/question', (req, res) => {
   );
 
 });
+
 
