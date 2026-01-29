@@ -112,7 +112,7 @@ app.post('/ginipet_users', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds); //npm install bcrypt
     const sql = "INSERT INTO ginipet_users (username, password, tel, email) VALUES (?, ?, ?, ?)";
 
-    data.query(sql, [username, hashedPassword, tel, email], (err, result) => {
+     connection.query(sql, [username, hashedPassword, tel, email], (err, result) => {
       if (err) {
         console.error('MySQL 실행 에러:', err);
         return res.status(500).json({ error: '데이터베이스 저장 실패' });
@@ -133,7 +133,7 @@ app.post('/ginipet_login', (req, res) => {
   }
 
   const sql = "SELECT * FROM ginipet_users WHERE username = ?";
-  data.query(sql, [username], async (err, results) => {
+   connection.query(sql, [username], async (err, results) => {
     if (err) return res.status(500).json({ message: "서버 오류" });
     if (results.length === 0) return res.status(404).json({ message: "존재하지 않는 계정입니다." });
 
@@ -591,6 +591,7 @@ app.post('/question', (req, res) => {
   );
 
 });
+
 
 
 
