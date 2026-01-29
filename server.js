@@ -114,12 +114,17 @@ console.log("가입 req.body:", req.body);
     const sql = "INSERT INTO ginipet_users (username, password, tel, email) VALUES (?, ?, ?, ?)";
 
      connection.query(sql, [username, hashedPassword, tel, email], (err, result) => {
-      if (err) {
-        console.error('MySQL 실행 에러:', err);
-        return res.status(500).json({ error: '데이터베이스 저장 실패' });
-      }
-      res.status(200).json({ message: "회원가입 완료" });
+  if (err) {
+    console.error('MySQL 실행 에러:', err);
+    return res.status(500).json({
+      error: 'DB 저장 실패',
+      code: err.code,
+      errno: err.errno,
+      sqlMessage: err.sqlMessage
     });
+  }
+  res.status(200).json({ message: "회원가입 완료" });
+});
   } catch (error) {
     console.error('bcrypt 암호화 에러:', error);
     res.status(500).json({ error: '서버 내부 에러' });
@@ -592,6 +597,7 @@ app.post('/question', (req, res) => {
   );
 
 });
+
 
 
 
