@@ -94,7 +94,7 @@ app.post('/login', (req, res) => {
 app.get('/ginipet_users', (req, res) => {
   const { username } = req.query;
   const sql = "SELECT * FROM ginipet_users WHERE username = ?";
-  data.query(sql, [username], (err, results) => {
+  connection.query(sql, [username], (err, results) => {
     if (err) {
       console.error('중복확인 쿼리 오류:', err);
       return res.status(500).json({ error: 'DB 조회 오류' });
@@ -591,6 +591,7 @@ app.post('/question', (req, res) => {
   );
 
 });
+
 
 
 
